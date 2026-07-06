@@ -29,7 +29,7 @@ async function main() {
   let json = await res.json();
   list.textContent = "";
   if(json)
-  for(let i of json) {
+  for await (let i of json) {
     let li = node('li');
     let check = node('input');
     let cont = new Text(i.name);
