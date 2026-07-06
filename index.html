@@ -1,0 +1,47 @@
+<form method="post" id="form" onsubmit="return function(e) {
+  func('', 'POST', this.task.value);
+  return false;
+}.bind(this)()">
+<input name="task" required>
+  <input type="submit">
+</form>
+<ul id="list">
+</ul>
+<script>
+"use strict";
+const api = "/tasks";
+let node = document.createElement.bind(document);
+async function func(id, method, title) {
+  let r = {};
+  let s = '/';
+  if(title){
+    r = {
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({name: title})
+    }
+     s = '';
+  }
+  await fetch(`${api}${s}${id}`, {method, ...r});
+  await main();
+}
+async function main() {
+  let res = await fetch (api);
+  let json = await res.json();
+  list.textContent = "";
+  if(json)
+  for(let i of json) {
+    let li = node('li');
+    let check = node('input');
+    let cont = new Text(i.name);
+    let del = node('button');
+    check.type = 'checkbox';
+    check.checked = i.is_done;
+    check.onchange = () => func(i.id, 'PUT');
+    del.onclick = () => func(i.id, 'DELETE');
+    del.append(new Text("delete"));
+    li.append(check, cont, del);
+    list.append(li);
+  }
+}
+main();
+</script>
